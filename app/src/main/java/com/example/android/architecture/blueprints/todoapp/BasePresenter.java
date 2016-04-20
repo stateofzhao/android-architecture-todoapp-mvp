@@ -24,10 +24,9 @@ package com.example.android.architecture.blueprints.todoapp;
  *      ->           ->           Remote data source
  * View    Presenter    Model ->
  *      <-            <-          Local data source
+ * <br/>
+ * 需要注意：Presenter不直接操作数据（更新数据状态），需要调用Model操作数据（更新数据状态）<br/>
  *
- * 作为Presenter，不只是请求数据和更新UI，它还有另一层作用，响应UI来更新数据。<br/>
- * 在MVP中View不能够直接修改Mode（数据），View要想修改Mode（数据）必须通过Presenter来实现，这样就把View和
- * Mode（数据）彻底分割开来了，View彻底沦为哑View了。
  */
 public interface BasePresenter {
 
