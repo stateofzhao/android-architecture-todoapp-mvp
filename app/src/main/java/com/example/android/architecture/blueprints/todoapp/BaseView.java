@@ -16,6 +16,10 @@
 
 package com.example.android.architecture.blueprints.todoapp;
 
+/**
+ * MVP 中的View，View必须是哑View，即只能是显示数据，响应操作，除此之外没有任何权限了，
+ * 不能够直接操作Model（当然也不能直接操作Model传递过来的Bean对象，一定要做到View只显示数据和响应操作）。
+ */
 public interface BaseView<T> {
 
     /** 让View持有Presenter，这样可以让View在合适的时机（View初始化完成）来调用Presenter中的方法加载数据 */
