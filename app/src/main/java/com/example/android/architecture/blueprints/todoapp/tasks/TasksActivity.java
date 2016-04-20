@@ -72,6 +72,9 @@ public class TasksActivity extends AppCompatActivity {
         }
 
         // Create the presenter
+        //在这里把Fragment（View）赋值给了Presenter,但是要注意，这里并没有马上调用Presenter的方法来加载数据，
+        //因为此时Fragment（View）还没有初始化完成！在这里把Presenter传递给了Fragment（View）从而能够在Fragment（View）,
+        //在初始化完成后在调用Presenter的方法来加载数据。
         mTasksPresenter = new TasksPresenter(
                 Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
 

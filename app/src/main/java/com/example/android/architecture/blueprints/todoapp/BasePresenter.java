@@ -20,4 +20,6 @@ public interface BasePresenter {
 
     void start();
 
+    //感觉这里应该再添加一个释放资源的方法
+    //    void destroy();
 }
