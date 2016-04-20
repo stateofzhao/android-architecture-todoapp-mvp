@@ -90,7 +90,7 @@ public class TasksFragment extends Fragment implements TasksContract.View {
         mPresenter.start();
     }
 
-    //让View持有Presenter，从而可以让View（Fragment）在时机合适的时候来调用Presenter的方法加载数据。
+    //让View持有Presenter，从而可以让View（Fragment）在时机合适（Fragment初始化完成）的时候来调用Presenter的方法加载数据。
     @Override
     public void setPresenter(@NonNull TasksContract.Presenter presenter) {
         mPresenter = checkNotNull(presenter);
