@@ -28,7 +28,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- 这个AppBarLayout是干嘛用的-->
+        <!-- 这个AppBarLayout是干嘛用的，这里用的不对着呢，要想实现Toolbar在 列表滚动时 滚出屏幕，需要
+        放到CoordinatorLayout 里面-->
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
