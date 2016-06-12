@@ -19,7 +19,7 @@ android {
             //解决：Error:Execution failed for task ':app:transformClassesWithNewClassShrinkerForMockDebug'.
             // F:\sdk\tools\proguard\proguard-android.txt line 43:15 extraneous input '[]' expecting ')'
             // bug修改成false
-            minifyEnabled false
+            minifyEnabled true
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
