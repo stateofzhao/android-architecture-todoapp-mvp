@@ -44,6 +44,12 @@ public class TasksPresenter implements TasksContract.Presenter {
 
     private boolean mFirstLoad = true;
 
+    /**
+     * 标准的Presenter，包含一个Model和一个View
+     *
+     * @param tasksRepository Model
+     * @param tasksView       View
+     */
     public TasksPresenter(@NonNull TasksRepository tasksRepository, @NonNull TasksContract.View tasksView) {
         mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null");
         mTasksView = checkNotNull(tasksView, "tasksView cannot be null!");
