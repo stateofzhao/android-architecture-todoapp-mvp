@@ -1,5 +1,6 @@
 # android-architecture-todoapp-mvp
 google官方推荐的Android框架MVP例子。自己添加了一些注释和心得。
+基于 Model-View-Presenter的机构模式。
 
 核心思想就再下面这张图里面：
 
@@ -9,6 +10,10 @@ google官方推荐的Android框架MVP例子。自己添加了一些注释和心�
 
 源码来自：
 https://github.com/googlesamples/android-architecture
+
+# android-architecture-todoapp-mvp-clean
+基于 todo-mvp的，使用Clean Architecture的概念来实现。参见链接：
+https://github.com/stateofzhao/android-architecture-todoapp-mvp-clean
 
 # 与MVP很相近的MVC模式
 参见知乎上的一个链接：
