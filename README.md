@@ -13,7 +13,7 @@ https://github.com/googlesamples/android-architecture
 
 # android-architecture-todoapp-mvp-clean
 首先看一个Clean Architecture构想图：
-![mvp](/CleanArchitecture.png)
+![mvp](/CleanArchitecture.jpg)
 
 约定，从最里面的圈向外依次为1、2、3、4。
 - 第一个圈是具体的商业逻辑，就是要实现的功能。
