@@ -1,3 +1,6 @@
+# 前提
+这里一定要说明一下，对于MVP,MVC,MVVM,Clean Architecture 等都只是设计思想，并不是代码框架，具体的框架需要来使用上述的设计思想来实现。就比如下面的MVP实现中，View是Activity,Fragment，Presenter是单独的类来处理逻辑，REPOSITORY可以看做是Model。
+
 # android-architecture-todoapp-mvp
 google官方推荐的Android框架MVP例子。自己添加了一些注释和心得。
 基于 Model-View-Presenter的机构模式。
@@ -33,6 +36,7 @@ https://github.com/googlesamples/android-architecture
 在这里 Activity和Fragment都是Views，不处理除UI逻辑之外的任何逻辑，许多的渲染操作都在这里完成。
 
 在这一层 Presenters 是由各种 interactors (use cases) 组成的，他们负责执行一个异步任务，并通过回调取回需要的数据给UI渲染。
+
 ![CleanCodeMvp](/CleanCodeMvp.png)
 
 Model就相当于各种interactors(use cases)，可以把多个interactors(use cases)封装一下来实现一个页面的逻辑，这样封装好的就是Model了，当然如果不封装也可以。
