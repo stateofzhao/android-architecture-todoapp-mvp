@@ -12,6 +12,8 @@ google官方推荐的Android框架MVP例子。自己添加了一些注释和心�
 https://github.com/googlesamples/android-architecture
 
 # android-architecture-todoapp-mvp-clean
+**下面的内容来自[简书](http://www.jianshu.com/p/c6a1a5c9a49b)**
+
 首先看一个Clean Architecture构想图：
 ![mvp](/CleanArchitecture.jpg)
 
@@ -21,7 +23,40 @@ https://github.com/googlesamples/android-architecture
 - 第三个圈，就是Presenter、Controllers了，负责调用第二个圈来让第一个圈产生数据，然后处理产生的数据来适配 第四个圈（数据库、Web、用户UI等）。
 - 第四个圈，展现产出的数据。
 
-这个顺序反过来也可以~
+上面只是一个设计规范，那么具体到代码实现应该怎么设计呢？
+下图是一个大概的框架：
+![CleanCode](/CleanCode.png)
+
+#### Presentation Layer
+这一层是处理UI、动画逻辑的地方，它使用了MVP（Model View Presenter）模式， 你也可以使用 MVC、MVVM（不再深究）。
+
+在这里 Activity和Fragment都是Views，不处理除UI逻辑之外的任何逻辑，许多的渲染操作都在这里完成。
+
+在这一层 Presenters 是由各种 interactors (use cases) 组成的，他们负责执行一个异步任务，并通过回调取回需要的数据给UI渲染。
+![CleanCodeMvp](/CleanCodeMvp.png)
+
+Model就相当于各种interactors(use cases)，可以把多个interactors(use cases)封装一下来实现一个页面的逻辑，这样封装好的就是Model了，当然如果不封装也可以。
+
+如果你想看一看一些比较酷的MVP、MVVM例子，可以参考 [Effective Android UI](https://github.com/pedrovgs/EffectiveAndroidUI/) 。
+
+#### Domain Layer
+所有的业务逻辑都是在这层处理的。考虑到Android工程，你会看到所有的 interactors (use cases) 也是在这里实现的。
+
+这层是一个纯Java的模块，不包含任何Android依赖，所有的外部交互都是通过接口来实现。
+![CleanCodeDomain](/CleanCodeDomain.png)
+
+通过上图可以发现，这一层即包含与 Presentation Layer交互的接口（interactors / use cases），也包含与 Data Layer交互的接口（Repository Interface）。
+
+#### Data Layer
+所有App需要的数据都是通过这层的 UserRepository （实现了DomainLayer的接口）提供的，它使用了 [Repository Pattern](http://martinfowler.com/eaaCatalog/repository.html) 的策略—— 通过一个工厂，根据不同的条件抓取不同的数据源。比如，当通过 id 来获取一个 user 时，如果这个 user 在缓存中不存在，那么它会选择磁盘缓存作为数据源，如果磁盘缓存也不存在它会通过云端接口获取数据，并保存在本地缓存中。
+
+#### Error Handling
+这是一个值得讨论的话题，非常欢迎任何分享。我的策略是实用回调机制。如果 DataRepo 发生变化，回调接口提供两个方法：onResponse() 和 onError(), 后者把错误封装在 ErrorBundle 类里面：这种处理方式带来一个问题，错误通过层层传递（就是异步编程中常见的 [CallbackHell](http://callbackhell.com/) 问题 ）导致代码可读性变差。
+
+或者可以使用 EventBus 来处理，但是这种方式有点像 [GOTO](http://www.drdobbs.com/jvm/programming-with-reason-why-is-goto-bad/228200966) 会导致代码逻辑混乱。
+
+github代码示例：
+[Here is the github link](https://github.com/android10/Android-CleanArchitecture)
 
 ****
 
