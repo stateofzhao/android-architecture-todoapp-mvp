@@ -80,3 +80,5 @@ https://www.zhihu.com/question/22886622
 回答中讲解的非常好，看了后发现我之前理解的Model和Controller有点不一样。
 
 - MVP，Presenter直接持并操作数据层UserRepository，数据层就被看做是MVP中的M了。由于Presenter对业务逻辑至关重要，所以Presenter不光起到隔离Model与View的作用，还起到具体业务逻辑实现的作用，导致Presenter比较臃肿，不便于业务功能的扩展。
+
+其实不用死搬硬套这些个模式，不是非得让类和这些模式中的定义对应上，比如，我就认为 M 就是java的数据对象（POJO），Data Repository，Domain层这些都是产出 M 的工具，这样也可以，关键是做到**分离关注点（在合适类中做合适的工作，例如在Activity中就应该仅仅进行UI相关操作）；代码模块间的低耦合，模块内的高内聚**。
