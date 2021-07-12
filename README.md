@@ -73,8 +73,10 @@ https://github.com/stateofzhao/android-architecture-todoapp-mvp-clean
 
 通过上面的理解，可以看出俩MVP中的M是一个相当泛类的指代，它并不是指具体的一个类，比如在基本MVP中它指数据层；而在MVP-Clean中指UseCase层的各种useCase。
 
-# 与MVP很相近的MVC模式
+# MVP是MVC的变种
 参见知乎上的一个链接：
 https://www.zhihu.com/question/22886622
 
-回答中讲解的非常好，看了后发现我之前理解的Model和Controller完全是错误的！！
+回答中讲解的非常好，看了后发现我之前理解的Model和Controller有点不一样。
+
+- MVP，Presenter直接持并操作数据层UserRepository，数据层就被看做是MVP中的M了。由于Presenter对业务逻辑至关重要，所以Presenter不光起到隔离Model与View的作用，还起到具体业务逻辑实现的作用，导致Presenter比较臃肿，不便于业务功能的扩展。
