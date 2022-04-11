@@ -1,5 +1,6 @@
 # Proguard rules that are applied to your test apk/code.
 -ignorewarnings
+-dontoptimize#关闭代码优化
 
 -keepattributes *Annotation*
 

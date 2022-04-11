@@ -1,32 +1,22 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
+plugins {
+    id 'com.android.application' version '7.1.2' apply false
+    id 'com.android.library' version '7.1.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.5.30' apply false
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-// Define versions in a single place
+// This block encapsulates custom properties and makes them available to all
+// modules in the project. The following are only a few examples of the types
+// of properties you can define.
 ext {
     // Sdk and tools
     minSdkVersion = 10
     targetSdkVersion = 22
     compileSdkVersion = 23
-    buildToolsVersion = '23.0.2'
+    buildToolsVersion = '30.0.3'
 
     // App dependencies
     supportLibraryVersion = '23.1.1'
