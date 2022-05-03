@@ -1,84 +1,111 @@
 # 前提
-这里一定要说明一下，对于MVP,MVC,MVVM,Clean Architecture 等都只是设计思想，并不是代码框架，具体的框架需要来使用上述的设计思想来实现。就比如下面的MVP实现中，View是Activity,Fragment，Presenter是单独的类来处理逻辑，REPOSITORY可以看做是Model。
+
+MVC、MVP、MVVM、Clean Architecture 等都只是设计思想，并不是代码框架。
+
+MVC，MVP，MVVM 是针对 GUI（用户界面）的设计模式，所以它们仅仅作为项目完整架构中的一环，而不是全部。
 
 # android-architecture-todoapp-mvp
-google官方推荐的Android框架MVP例子。自己添加了一些注释和心得。
-基于 Model-View-Presenter的机构模式。
 
-核心思想就再下面这张图里面：
+Google官方推荐的Android框架MVP例子，自己添加了一些注释和理解。
 
-![mvp](/mvp.png)
+基于 Model View Presenter的架构模式，核心思想如下图所示：
 
-图中的REPOSITORY 也就是数据层，相当于Model。
+![mvp](docs/images/mvp.png)
+
+此项目的MVP分工：
+
+- Model
+
+  指data包下的Task。由于Task为Immutable所以即使View直接持有它也不会有问题，不会对业务逻辑有任何影响（也可以认为View没有持有Model，对于复杂需求View一般会有一个自己的属性类，Presenter负责将Model转换为View的属性对象）。
+
+- View
+
+  Android的用户界面，负责处理与用户的交互、View渲染以及动画等UI相关逻辑，持有Presenter，通过调用Presenter的方法来获取展示的数据。
+
+- Presenter 
+
+  持有Repository和View（两者通过构造函数进行注入），被View调用后从Repository中读取数据（Model），然后更新View的显示。一般不包含任何业务逻辑，它所做的那部分仅仅是将业务数据转换为View能够识别的数据，在本示例中，并没有单独设计一个View属性类（类似ViewModel的类），直接将Repository返回的Model设置给了View，因为Model是Immutable类型，所以不必担心View持有Model会带来问题（可以认为View没有持有Model）。
 
 源码来自：
-https://github.com/googlesamples/android-architecture
+https://github.com/android/architecture-samples/tree/todo-mvp
 
 # android-architecture-todoapp-mvp-clean
-**下面的内容来自[简书](http://www.jianshu.com/p/c6a1a5c9a49b)**
 
-首先看一个Clean Architecture构想图：
-![mvp](/CleanArchitecture.jpg)
+## Clean Architecture
 
-约定，从最里面的圈向外依次为1、2、3、4。
-- 第一个圈，是代表App的业务对象（business objects of the application），我的理解也就是相当于数据层。
-- 第二个圈，是编排数据从 Entity 入或出的流，也叫交互器(Interactors)，基本上所有业务逻辑都在这里。
-- 第三个圈，把 Use Cases 或者 Entity 使用的数据结构转换成需要的形式。Presenters 和 Controllers 都属于这里。
-- 第四个圈，框架和驱动：处理细节的地方：UI、工具（tools）、框架（framework）等。
+首先看一个[Clean Architecture构想图](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)：
+![mvp](docs/images/CleanArchitecture.jpg)
 
-上面只是一个设计规范，那么具体到代码实现应该怎么设计呢？
-下图是一个大概的框架：
-![CleanCode](/CleanCode.png)
+最重要的是依赖规则，一定要从外向内进行依赖，最内圈Entities不依赖任何外部类，实现所有业务逻辑，最终做到业务逻辑与依赖细节实现完全解藕。
 
-#### Presentation Layer
-这一层是处理UI、动画逻辑的地方，它使用了MVP（Model View Presenter）模式， 你也可以使用 MVC、MVVM（不再深究）。
+简单说明下各个圈的职责：
 
-在这里 Activity和Fragment都是Views，不处理除UI逻辑之外的任何逻辑，许多的渲染操作都在这里完成。
+- Entities 
 
-在这一层 Presenters 是由各种 interactors (use cases) 组成的，他们负责执行一个异步任务，并通过回调取回需要的数据给UI渲染。
+  纯java对象（POJO类），**可以是具有方法的对象，也可以是一组数据结构和函数**这并不重要，只要实体可以被企业中的许多不同应用程序使用就行。如果只是编写一个简单的程序，这些实体就是应用程序的业务对象。封装了最通用和最高级的规则。当外部事物发生变化时，它们最不可能发生变化。
 
-![CleanCodeMvp](/CleanCodeMvp.png)
+- User Cases 
 
-Model就相当于各种interactors(use cases)，可以把多个interactors(use cases)封装一下来实现一个页面的逻辑，这样封装好的就是Model了，当然如果不封装也可以。
+  收敛or组合Entities，转换出当前App需要的数据，当然如果有一个Entities能够完全匹配你的App，那么直接拿来用也可以。
 
-如果你想看一看一些比较酷的MVP、MVVM例子，可以参考 [Effective Android UI](https://github.com/pedrovgs/EffectiveAndroidUI/) 。
+- Interface Adapters 
 
-#### Domain Layer
-所有的业务逻辑都是在这层处理的。考虑到Android工程，你会看到所有的 interactors (use cases) 也是在这里实现的。
+  负责将User Case输出的数据转换为外部接收模块能够识别的数据格式，例如，UI展示需要的数据等。完整GUI架构MVC，MVP，MVVM都位于此层，**它们中的Model可以理解为从Controller传递到UserCase层或者从UserCase层传递到Presenter/View层的数据结构，在Uncle Bob博客中是这么解释的，并没有将UserCase+Entites看作GUI架构的整个Model**。
 
-这层是一个纯Java的模块，不包含任何Android依赖，所有的外部交互都是通过接口来实现。
-![CleanCodeDomain](/CleanCodeDomain.png)
+- Frameworks and Drivers
 
-通过上图可以发现，这一层即包含与 Presentation Layer交互的接口（interactors / use cases），也包含与 Data Layer交互的接口（Repository Interface）。
+  负责与“固件”打交道，它们完全与当前运行环境、三方框架等强绑定，它有两层含义：
 
-#### Data Layer
-所有App需要的数据都是通过这层的 UserRepository （实现了DomainLayer的接口）提供的，它使用了 [Repository Pattern](http://martinfowler.com/eaaCatalog/repository.html) 的策略—— 通过一个工厂，根据不同的条件抓取不同的数据源。比如，当通过 id 来获取一个 user 时，如果这个 user 在缓存中不存在，那么它会选择磁盘缓存作为数据源，如果磁盘缓存也不存在它会通过云端接口获取数据，并保存在本地缓存中。
+  - 负责实现内圈的抽象细节，例如：数据库存储，网络存储，线程池等。
+  - 负责内圈业务数据的展示与接受业务输入（UI）。
 
-#### Error Handling
-这是一个值得讨论的话题，非常欢迎任何分享。我的策略是实用回调机制。如果 DataRepo 发生变化，回调接口提供两个方法：onResponse() 和 onError(), 后者把错误封装在 ErrorBundle 类里面：这种处理方式带来一个问题，错误通过层层传递（就是异步编程中常见的 [CallbackHell](http://callbackhell.com/) 问题 ）导致代码可读性变差。
+是不是只能四个圈？
 
-或者可以使用 EventBus 来处理，但是这种方式有点像 [GOTO](http://www.drdobbs.com/jvm/programming-with-reason-why-is-goto-bad/228200966) 会导致代码逻辑混乱。
+不是，上图的圈只是一个示意，没有规则说只能有四个圈。在你实际开发中可能不仅仅只有这四个圈。但是，依赖规则始终适用。 源代码依赖项总是指向内部。 随着您向内移动，抽象级别会增加。 最外圈是低层次的具体细节。 随着您向内移动，软件变得更加抽象，并封装了更高级别的策略。 最内圈是最简单的java类（POJO类）。
 
-github代码示例：
-[Here is the github link](https://github.com/android10/Android-CleanArchitecture)
+上面只是一个架构指导思想，那么具体到代码实现应该怎么实现呢？
+下图是一个设计图：
+![CleanCode](docs/images/domain-architecture.png)
 
-****
+**各个层级之间采用Dependency Inversion Principle（依赖倒置原则）来结合**。
 
-基于 android-architecture-todoapp-mvp，使用Clean Architecture的概念来实现。参见链接：
-https://github.com/stateofzhao/android-architecture-todoapp-mvp-clean
+**针对此图要额外多说下GUI架构（MVC、MVP、MVVM）中的Model对应于上图中的`Type1`、`Type2`、`Type3`、`Type4`、`Type5`**。
 
-在这里唠叨下MVP和MVP-Clean的不同：
-- MVP，Presenter直接持并操作数据层UserRepository，数据层就被看做是MVP中的M了。由于Presenter对业务逻辑至关重要，所以Presenter不光起到隔离Model与View的作用，还起到具体业务逻辑实现的作用，导致Presenter比较臃肿，不便于业务功能的扩展。
-- MVP-Clean，这个是MVP结合Clean Architecture来使用的，不让Presenter直接处理数据层，而是使用Domain Layer把数据层与上层（Presenter和View）彻底隔离起来，所有的业务逻辑都是在这层处理的，考虑到Android工程，你会看到所有的 interactors (use cases) 也是在这里实现的，这一层是纯java模块，不包含任何Android依赖；Presenter是由各种interactors (use cases) 组成，Presenter其实就是起到一个数据转换作用，把数据层的数据封装成View需要显示的数据；数据层UserRepository（实现了DomainLayer的接口）与上面的基本MVP数据层一样，就是提供APP需要的各种数据，注意数据层需要实现DomainLayer层提供的接口，但是在官方例子中，数据层接口直接放到数据层里面。
+### GUI Layer
 
-通过上面的理解，可以看出俩MVP中的M是一个相当泛类的指代，它并不是指具体的一个类，比如在基本MVP中它指数据层；而在MVP-Clean中指UseCase层的各种useCase。
+这一层是处理UI逻辑的地方，使用了MVP（Model View Presenter）模式， 你也可以使用 MVC、MVVM。
 
-# MVP是MVC的变种
-参见知乎上的一个链接：
-https://www.zhihu.com/question/22886622
+在这里 Activity和Fragment都是Views，不处理除UI逻辑之外的任何逻辑，View的渲染操作都在这里完成。
 
-回答中讲解的非常好，看了后发现我之前理解的Model和Controller有点不一样。
+在这一层 Presenters 调用/组合UserCase来获取Model然后转换成View所需的属性最后设置给View。有时候为了简便会直接将Model设置给View，来让View自己根据Model设置显示内容，Presenters从UserCase获取到的数据一般都是Immutable类型，所以不必担心View持有Model带来的问题（可以认为View没有持有Model）。
 
-- MVP，Presenter直接持并操作数据层UserRepository，数据层就被看做是MVP中的M了。由于Presenter对业务逻辑至关重要，所以Presenter不光起到隔离Model与View的作用，还起到具体业务逻辑实现的作用，导致Presenter比较臃肿，不便于业务功能的扩展。
+![CleanCodeMvp](docs/images/CleanCodeMvp.png)
 
-其实不用死搬硬套这些个模式，不是非得让类和这些模式中的定义对应上，比如，我就认为 M 就是java的数据对象（POJO），Data Repository，Domain层这些都是产出 M 的工具，这样也可以，关键是做到**分离关注点（在合适类中做合适的工作，例如在Activity中就应该仅仅进行UI相关操作）；代码模块间的低耦合，模块内的高内聚**。
+### Domain Layer
+
+不包含任何框架代码，仅包含简单的java类，与平台，固件，环境，框架完全无关。
+
+我们按照Google-Android给出的架构模式来看。
+
+这层包含各种UserCase，其实就是封装了下DataLayer层来针对APP开发出APP所需的API，对于一些简单APP可以去掉这一层。
+
+### Data Layer
+
+最高层，同样不包含任何框架代码，仅包含简单的java类，与平台，固件，环境，框架完全无关。
+
+通过依赖倒置来隔离此层与具体的数据存储细节代码（数据库，网络等），具体来说就是只依赖自己抽象出来的Repository接口，让调用方来进行具体的Repository依赖注入（注入这一步应该在GUILayer做）。
+
+## PS
+
+MVP只是整个项目架构中的一环，相对于android-architecture-todoapp-mvp，这里额外增加了UserCase层，简单点来说就是相对于 android-architecture-todoapp-mvp 区别就是两者的业务处理层不同：
+
+- android-architecture-todoapp-mvp 业务层只有数据层（DataLayer）：Repository。
+- android-architecture-todoapp-mvp-clean 业务层为领域层+数据层（DomainLayer+DataLayer）：UserCase+Repository。
+
+Github代码示例：
+
+[Android官方示例](https://github.com/android/architecture-samples/tree/todo-mvp-clean)
+
+[Android10示例](https://github.com/android10/Android-CleanArchitecture)
+
+其实不用死搬硬套这些个模式，关键是做到**分离关注点（在合适类中做合适的工作，例如在Activity中就应该仅仅进行UI相关操作），代码模块间的低耦合，模块内的高内聚。如果你能不采用这些架构思想做到这一点也可以**。

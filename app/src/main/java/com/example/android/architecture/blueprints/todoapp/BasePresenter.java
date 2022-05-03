@@ -18,20 +18,17 @@ package com.example.android.architecture.blueprints.todoapp;
 
 /**
  * Presenter 是Model和View的中间衔接层，一个标准的Presenter中应该至少包含一个Model和一个View。<br/>
- * 在MVP模式中，View是不允许与Model交互的，View只是负责展示数据，是彻底的哑View。当View需要更新数据时，
- * 需要通过Presenter来操作Model，Model获取到数据后再通过Presenter来更新View。<br/>
- * 所以数据流通是这样的:
- *      ->           ->           Remote data source
- * View    Presenter    Model ->
- *      <-            <-          Local data source
+ * 在MVP模式中，View不允许与Model交互，View仅负责展示数据。
+ * View通过Presenter来获取Model（注意不是操作Model，例如在本例中是通过操作Repository来获取的Model），
+ * Presenter 获取到Model后来更新View。<br/>
+ * 数据流通是这样的:
+ *      ->           ----Model作为参数-->                 Remote data source
+ * View    Presenter                      Repository ->
+ *      <-            <--Model作为结果---                 Local data source
  * <br/>
- * 需要注意：Presenter不直接操作数据（更新数据状态），需要调用Model操作数据（更新数据状态）<br/>
+ * 需要注意：Presenter 一般不含有业务逻辑，仅仅负责将Model返回的数据转换为View显示的数据<br/>
  *
  */
 public interface BasePresenter {
-
     void start();
-
-    //感觉这里应该再添加一个释放资源的方法
-    //    void destroy();
 }
