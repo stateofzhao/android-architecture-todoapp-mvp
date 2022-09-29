@@ -16,7 +16,7 @@ Google官方推荐的Android框架MVP例子，自己添加了一些注释和理�
 
 - Model
 
-  指data包下的Task。由于Task为Immutable所以即使View直接持有它也不会有问题，不会对业务逻辑有任何影响（也可以认为View没有持有Model，对于复杂需求View一般会有一个自己的属性类，Presenter负责将Model转换为View的属性对象）。
+  指整个DataLayer层（这里为 REPOSITORY+Task），不是单指某个类。由于Task为Immutable类型所以即使View直接持有它也不会有问题，不会对业务逻辑有任何影响（也可以认为View没有持有Model，这里这么做只是为了简化，减少不必要的类型转换，对于复杂需求View一般会有一个自己的属性类，Presenter负责将Model转换为View的属性对象）。
 
 - View
 
